@@ -28,7 +28,7 @@ def input_pdf_text(uploaded_file):
     return text
 
 # Prompt Template
-input_prompt_template = = """
+input_prompt_template = """
   You are an AI bot designed to act as a professional for parsing resumes. You are given a resume, and your job is to extract the following information from the resume:
   1. langues
   2. email
