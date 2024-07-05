@@ -30,6 +30,7 @@ def input_pdf_text(uploaded_file):
 # Prompt Template
 input_prompt_template = """
   You are an AI bot designed to act as a professional for parsing resumes. You are given a resume, and your job is to extract the following information from the resume:
+  0. full name
   1. langues
   2. email
   3. phone numbers
@@ -52,7 +53,7 @@ input_prompt_template = """
   20. ans d'expérience
 resume: {text}
 I want the response in one single string with the structure:
-{{"langues":"","email":"","phone numbers":"","langages de balisage":"","programming languages":"","databases":"","skills":"","status":"","technologies":"","APIs":"","operating systems":"","modeling languages":"","methodologies":"","design patterns":"","architectures":"","outils":"","sexe":"","university":"","adresse":"","ans d'expérience":""}}
+{{"first name":"","langues":"","email":"","phone numbers":"","langages de balisage":"","programming languages":"","databases":"","skills":"","status":"","technologies":"","APIs":"","operating systems":"","modeling languages":"","methodologies":"","design patterns":"","architectures":"","outils":"","sexe":"","university":"","adresse":"","ans d'expérience":""}}
 """
 
 # Streamlit app
