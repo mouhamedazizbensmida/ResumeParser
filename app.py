@@ -28,20 +28,31 @@ def input_pdf_text(uploaded_file):
     return text
 
 # Prompt Template
-input_prompt_template = """
-  You are an AI bot designed to act as a professional for parsing resumes. You are given with resume and your job is to extract the following information from the resume:
-  1. full name
+input_prompt_template = = """
+  You are an AI bot designed to act as a professional for parsing resumes. You are given a resume, and your job is to extract the following information from the resume:
+  1. langues
   2. email
-  3. skills
-  4. university
-  5. adresse
-  6. parcours educatif
-  7. ans d'experience
+  3. phone numbers
+  4. langages de balisage
+  5. programming languages
+  6. databases
+  7. skills
   8. status
-  9. sexe : ["Male","Female","Other"]
+  9. technologies
+  10. APIs
+  11. operating systems
+  12. modeling languages
+  13. methodologies
+  14. design patterns
+  15. architectures
+  16. outils
+  17. sexe: ["Male", "Female", "Other"]
+  18. university
+  19. adresse
+  20. ans d'expérience
 resume: {text}
-I want the response in one single string having the structure
-{{"first name":"",last name":"","email":"","skills":"","university":"","adresse":"","parcours educatif":"","ans d'experience":"";"status":"";"sexe":"";}}
+I want the response in one single string with the structure:
+{{"langues":"","email":"","phone numbers":"","langages de balisage":"","programming languages":"","databases":"","skills":"","status":"","technologies":"","APIs":"","operating systems":"","modeling languages":"","methodologies":"","design patterns":"","architectures":"","outils":"","sexe":"","university":"","adresse":"","ans d'expérience":""}}
 """
 
 # Streamlit app
