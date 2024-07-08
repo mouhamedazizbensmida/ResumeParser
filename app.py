@@ -30,26 +30,26 @@ def input_pdf_text(uploaded_file):
 # Prompt Template
 input_prompt_template = """
   You are an AI bot designed to act as a professional for parsing resumes. You are given a resume, and your job is to extract the following information from the resume:
-  1. langues
-  2. email
-  3. phone numbers
-  4. langages de balisage
-  5. programming languages
-  6. databases
-  7. skills
-  8. status
-  9. technologies
-  10. APIs
-  11. operating systems
-  12. modeling languages
-  13. methodologies
-  14. design patterns
-  15. architectures
-  16. outils
-  17. sexe: ["Male", "Female", "Other"]
-  18. university
-  19. adresse
-  20. ans d'expérience
+  . langues
+  . email
+  . phone numbers
+  . langages de balisage
+  . programming languages
+  . databases
+  . status
+  . technologies
+  . APIs
+  . operating systems
+  . modeling languages
+  . methodologies
+  . design patterns
+  . architectures
+  . outils
+  . sexe: ["Male", "Female", "Other"]
+  . university
+  . adresse
+  . ans d'expérience
+  if an attribute hasn't information a null value is affected to this attribute
 resume: {text}
 I want the response in one single string with the structure:
 {{"langues":"","email":"","phone numbers":"","langages de balisage":"","programming languages":"","databases":"","skills":"","status":"","technologies":"","APIs":"","operating systems":"","modeling languages":"","methodologies":"","design patterns":"","architectures":"","outils":"","sexe":"","university":"","adresse":"","ans d'expérience":""}}
