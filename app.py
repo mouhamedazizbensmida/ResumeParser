@@ -1,17 +1,49 @@
-
-
 import streamlit as st
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC 
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
 from datetime import datetime
 import re
+import subprocess
+
+# Install Chrome and ChromeDriver
+def install_chrome():
+    subprocess.run(['wget', 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'])
+    subprocess.run(['sudo', 'apt', 'install', './google-chrome-stable_current_amd64.deb', '-y'])
+
+def install_chromedriver():
+    chrome_driver_version = subprocess.check_output(['curl', '-sS', 'chromedriver.storage.googleapis.com/LATEST_RELEASE']).decode('utf-8')
+    subprocess.run(['wget', '-N', f'https://chromedriver.storage.googleapis.com/{chrome_driver_version}/chromedriver_linux64.zip'])
+    subprocess.run(['unzip', 'chromedriver_linux64.zip'])
+    subprocess.run(['sudo', 'mv', 'chromedriver', '/usr/local/bin/'])
+    subprocess.run(['sudo', 'chmod', '+x', '/usr/local/bin/chromedriver'])
+
+install_chrome()
+install_chromedriver()
+
+# Set up Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("start-maximized")
+chrome_options.add_argument("disable-infobars")
+chrome_options.add_argument("--disable-extensions")
+
+# Specify the path to the ChromeDriver
+chrome_driver_path = '/usr/local/bin/chromedriver'
+service = Service(chrome_driver_path)
+
+# Initialize the WebDriver
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
 # Functions
 def fetch_job_cards():
@@ -92,38 +124,6 @@ def extract_job_description():
         except TimeoutException:
             pass
     return job_description_text
-def scrape_page():
-    try:
-        job_cards = fetch_job_cards()
-        num_cards = len(job_cards)
-        print(f"Number of job cards found: {num_cards}")
-
-        for idx in range(num_cards):
-            print(f"Scraping job {idx + 1} of {num_cards}")
-            try:
-                scrape_job_card(idx, job_cards)
-            except StaleElementReferenceException:
-                print("Stale element reference exception occurred. Retrying...")
-                continue
-
-    except Exception as e:
-        print(f"An error occurred while scraping the page: {str(e)}")
-
-def fetch_job_cards():
-    job_list = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'jobs-search__results-list')))
-    return job_list.find_elements(By.TAG_NAME, 'li')
-
-def extract_element_text(element, class_names):
-    if not isinstance(class_names, list):
-        class_names = [class_names]
-
-    for class_name in class_names:
-        try:
-            return element.find_element(By.CLASS_NAME, class_name).text.strip()
-        except NoSuchElementException:
-            continue
-
-    return None
 
 def navigate_and_retry(idx, job_cards):
     if idx != 0:
@@ -227,46 +227,34 @@ def process_pages(base_url):
 
 def Search_Profondeur(table):
     st.write(table)
+
 # Streamlit UI
 st.title("LinkedIn Job Scraper")
 base_url = st.text_input("Enter the base URL", "Put the LinkedIn URL to extract the jobs")
 start_button_Simple = st.button("Start Scraping Simple")
 start_button_Profondeur = st.button("Start Scraping En Profondeur")
-@st.cache_data
-def convert_df(data):
-    df = pd.DataFrame(data)
-    return df.to_csv(index=False).encode('utf-8')
 
-if start_button_Simple or start_button_Profondeur:
-    service = Service(r'chromedriver.exe')
-    driver = webdriver.Chrome(service=service)
-    driver.maximize_window()
-    table = []
-    process_pages(base_url)
+table = []
 
-    # Convert DataFrame to CSV
-    csv = convert_df(table)
-    
-    # Instructions for the user
-    st.write("""
-    After clicking the download button, your browser will prompt you to save the file. 
-    If you want to choose the location where the file should be saved, make sure your browser is configured to ask you where to save each file before downloading. 
-    Here's how you can do it for popular browsers:
-    - **Chrome:** Go to Settings > Advanced > Downloads, and turn on "Ask where to save each file before downloading".
-    - **Firefox:** Go to Options > General, and under "Files and Applications", select "Always ask you where to save files".
-    - **Edge:** Go to Settings > Downloads, and turn on "Ask me what to do with each download".
-    """)
+if start_button_Simple:
+    driver.get(base_url)
+    scroll_down(driver)
+    scrape_page()
 
-    # Download button with dynamic file name
-    st.download_button(
-        label="Press to Download",
-        data=csv,
-        file_name=f"file_name.csv",
-        mime="text/csv",
-        key='download-csv'
-    )
+    df = pd.DataFrame(table)
+    st.dataframe(df)
+
+    csv = df.to_csv(index=False)
+    st.download_button("Download CSV", csv, "output.csv", "text/csv", key='download-csv')
+
 if start_button_Profondeur:
-    Search_Profondeur("Yoo Hello")
+    process_pages(base_url)
+    df = pd.DataFrame(table)
+    st.dataframe(df)
+    
+    csv = df.to_csv(index=False)
+    st.download_button("Download CSV", csv, "output.csv", "text/csv", key='download-csv')
+
 
 ###################################################################################################
 #Resume Parser
