@@ -2,7 +2,7 @@
 #PyPDF2
 #google.generativeai
 #python-dotenv
-streamlit==1.23.0
-selenium==4.9.0
-beautifulsoup4==4.12.2
-pandas==1.5.3
+streamlit
+selenium
+beautifulsoup4
+pandas
