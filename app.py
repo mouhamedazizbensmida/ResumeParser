@@ -269,7 +269,7 @@ if start_button_Profondeur:
     Search_Profondeur("Yoo Hello")
 
 ###################################################################################################
-Resume Parser
+#Resume Parser
 #import streamlit as st
 # import google.generativeai as genai
 # import os
