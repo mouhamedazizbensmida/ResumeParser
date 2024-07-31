@@ -238,7 +238,7 @@ def convert_df(data):
     return df.to_csv(index=False).encode('utf-8')
 
 if start_button_Simple or start_button_Profondeur:
-    service = Service(r'.\\chromedriver.exe')
+    service = Service(r'chromedriver.exe')
     driver = webdriver.Chrome(service=service)
     driver.maximize_window()
     table = []
